@@ -18,13 +18,15 @@ All CSVs live in `data/` and are loaded at runtime. Values are read as strings a
   - `dev_cost_per_month` (number): Monthly development cost in millions of dollars
   - `time_to_market` (number): Months until game launches (1-12)
   - `roas` (number): Return on Ad Spend multiplier (hidden from player until launch)
-  - `icon` (string): Single emoji/unicode character representing the game (1980s arcade theme)
+  - `icon` (string): Single emoji/unicode character OR path to image file (e.g., "sprites/mike.png")
 - Constraints:
   - Exactly 24 rows (Alfa through Xray)
   - `dev_cost_per_month` > 0
   - `time_to_market` between 1 and 12
   - `roas` > 0
-  - `icon` should be a single emoji character
+  - `icon` can be either:
+    - A single emoji character (e.g., 👾, 🚀, 🎮)
+    - An image path starting with "sprites/" (e.g., "sprites/mike.png")
 
 ## Audio files
 

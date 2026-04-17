@@ -10,6 +10,20 @@ import {
   getMonthName,
 } from "./engine/gameState";
 
+// Helper component to render icons (emoji or image)
+function ProjectIcon({ icon, size = "1em" }: { icon: string; size?: string }) {
+  if (icon.startsWith("sprites/")) {
+    return (
+      <img
+        src={`/${icon}`}
+        alt=""
+        style={{ width: size, height: size, objectFit: "cover", borderRadius: "4px" }}
+      />
+    );
+  }
+  return <span style={{ fontSize: size }}>{icon}</span>;
+}
+
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
@@ -190,7 +204,9 @@ function SelectionScreen({
                   } ${draggedProject === project.name ? "opacity-50" : ""}`}
                   style={{ fontSize: "9px" }}
                 >
-                  <div className="text-xl mb-0.5">{project.icon}</div>
+                  <div className="mb-0.5 flex justify-center items-center" style={{ height: "24px" }}>
+                    <ProjectIcon icon={project.icon} size="24px" />
+                  </div>
                   <div className="font-bold truncate" style={{ color: "#00ffff" }}>
                     {project.name}
                   </div>
@@ -220,7 +236,9 @@ function SelectionScreen({
                 {lane ? (
                   <>
                     <div className="flex items-center gap-2 flex-1">
-                      <span className="text-2xl">{lane.project.icon}</span>
+                      <div style={{ width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <ProjectIcon icon={lane.project.icon} size="32px" />
+                      </div>
                       <div className="text-xs">
                         <div className="font-bold" style={{ color: "#00ffff" }}>
                           {lane.project.name}
@@ -380,7 +398,9 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
                     style={{ opacity: alreadySelected ? 0.5 : 1 }}
                     disabled={alreadySelected}
                   >
-                    <div className="text-2xl" style={{ lineHeight: "1" }}>{project.icon}</div>
+                    <div style={{ width: "28px", height: "28px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <ProjectIcon icon={project.icon} size="28px" />
+                    </div>
                     <div className="flex-1">
                       <div className="font-bold" style={{ color: "#00ffff" }}>
                         {project.name}
@@ -442,7 +462,9 @@ function DesignLane({
     <div className="border-b flex items-center px-2 py-1.5 relative" style={{ borderColor: "#00ff00" }}>
       {/* Lane label */}
       <div className="w-28 space-y-0.5 flex gap-1.5">
-        <div className="text-xl" style={{ lineHeight: "1" }}>{lane.project.icon}</div>
+        <div style={{ width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <ProjectIcon icon={lane.project.icon} size="20px" />
+        </div>
         <div className="flex-1 space-y-0.5">
           <div className="pixel-text text-xs font-bold" style={{ color: "#00ffff" }}>
             {lane.project.name}

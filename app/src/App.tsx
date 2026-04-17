@@ -229,25 +229,25 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
   return (
     <div className="flex flex-col h-full">
       {/* HUD */}
-      <div className="flex justify-between items-center p-2 border-b-2" style={{ borderColor: "#00ff00" }}>
-        <div className="pixel-text text-xs space-x-4 flex">
+      <div className="flex justify-between items-center px-2 py-1 border-b-2" style={{ borderColor: "#00ff00" }}>
+        <div className="pixel-text text-xs space-x-3 flex">
           <span style={{ color: "#00ff00" }}>MONTH: {getMonthName(state.currentMonth)}</span>
           <span style={{ color: "#ffff00" }}>DEV: ${state.devBudgetUsed.toFixed(1)}M / ${state.devBudgetTotal}M</span>
           <span style={{ color: "#ff00ff" }}>ADS: ${state.adBudgetUsed.toFixed(1)}M / ${state.adBudgetTotal}M</span>
           <span style={{ color: "#00ffff" }}>REVENUE: ${state.totalRevenue.toFixed(1)}M</span>
         </div>
-        <button className="ui-button text-xs" onClick={() => setIsPaused(!isPaused)}>
+        <button className="ui-button text-xs px-2 py-1" onClick={() => setIsPaused(!isPaused)}>
           {isPaused ? "RESUME" : "PAUSE"}
         </button>
       </div>
 
       {/* Month headers */}
-      <div className="flex border-b-2 px-2" style={{ borderColor: "#00ff00" }}>
-        <div className="w-32"></div>
+      <div className="flex border-b-2 px-2 py-0.5" style={{ borderColor: "#00ff00" }}>
+        <div className="w-28"></div>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((m) => (
           <div
             key={m}
-            className="flex-1 text-center pixel-text text-xs py-1"
+            className="flex-1 text-center pixel-text text-xs"
             style={{ color: m === state.currentMonth ? "#ffff00" : "#00aa00" }}
           >
             {getMonthName(m)}
@@ -336,8 +336,8 @@ function DesignLane({
 
   if (!lane) {
     return (
-      <div className="border-b flex items-center px-2 py-3" style={{ borderColor: "#222" }}>
-        <div className="w-32 pixel-text text-xs ink-soft">Lane {laneIndex + 1}</div>
+      <div className="border-b flex items-center px-2 py-1.5" style={{ borderColor: "#222" }}>
+        <div className="w-28 pixel-text text-xs ink-soft">Lane {laneIndex + 1}</div>
         <div className="flex-1 text-center pixel-text text-xs ink-soft">(empty)</div>
       </div>
     );
@@ -346,39 +346,40 @@ function DesignLane({
   const progress = (lane.monthsInDevelopment / 12) * 100;
 
   return (
-    <div className="border-b flex items-center px-2 py-3 relative" style={{ borderColor: "#00ff00" }}>
+    <div className="border-b flex items-center px-2 py-1.5 relative" style={{ borderColor: "#00ff00" }}>
       {/* Lane label */}
-      <div className="w-32 space-y-1">
+      <div className="w-28 space-y-0.5">
         <div className="pixel-text text-xs font-bold" style={{ color: "#00ffff" }}>
           {lane.project.name}
         </div>
-        <div className="pixel-text text-xs" style={{ color: "#ffff00" }}>
+        <div className="pixel-text" style={{ color: "#ffff00", fontSize: "10px" }}>
           ${lane.project.dev_cost_per_month}M/mo
         </div>
         {lane.launched && (
-          <div className="pixel-text text-xs" style={{ color: "#00ff00" }}>
+          <div className="pixel-text" style={{ color: "#00ff00", fontSize: "10px" }}>
             ROAS: {lane.project.roas.toFixed(1)}x
           </div>
         )}
         {lane.launched && (
           <button
-            className="ui-button text-xs px-2 py-1 mt-1"
+            className="ui-button px-1.5 py-0.5 mt-0.5"
+            style={{ fontSize: "10px" }}
             onClick={() => setShowAdSpendInput(!showAdSpendInput)}
           >
             Ad: ${lane.monthlyAdSpend.toFixed(1)}M
           </button>
         )}
         <button
-          className="ui-button text-xs px-2 py-1 mt-1"
+          className="ui-button px-1.5 py-0.5 mt-0.5"
           onClick={onRequestSwap}
-          style={{ backgroundColor: "#ff0000", borderColor: "#ff0000" }}
+          style={{ backgroundColor: "#ff0000", borderColor: "#ff0000", fontSize: "10px" }}
         >
           CANCEL
         </button>
       </div>
 
       {/* Progress bar */}
-      <div className="flex-1 relative h-8 border-2" style={{ borderColor: "#00ff00" }}>
+      <div className="flex-1 relative h-6 border-2" style={{ borderColor: "#00ff00" }}>
         <div
           className="h-full transition-all"
           style={{
@@ -388,7 +389,7 @@ function DesignLane({
           }}
         ></div>
         {lane.launched && (
-          <div className="absolute inset-0 flex items-center justify-center pixel-text text-xs font-bold">
+          <div className="absolute inset-0 flex items-center justify-center pixel-text font-bold" style={{ fontSize: "10px" }}>
             LAUNCHED
           </div>
         )}
@@ -396,16 +397,16 @@ function DesignLane({
 
       {/* Ad spend input */}
       {showAdSpendInput && (
-        <div className="absolute top-full left-32 mt-1 z-10 ui-panel p-2 flex gap-2">
+        <div className="absolute top-full left-28 mt-1 z-10 ui-panel p-1.5 flex gap-1.5">
           <input
             type="number"
-            className="w-24 px-2 py-1 border-2 bg-black pixel-text text-xs"
-            style={{ borderColor: "#00ff00", color: "#00ff00" }}
+            className="w-20 px-1.5 py-0.5 border-2 bg-black pixel-text"
+            style={{ borderColor: "#00ff00", color: "#00ff00", fontSize: "10px" }}
             placeholder="0.0"
             value={adSpendValue}
             onChange={(e) => setAdSpendValue(e.target.value)}
           />
-          <button className="ui-button text-xs px-2" onClick={handleSetAdSpend}>
+          <button className="ui-button px-1.5 py-0.5" style={{ fontSize: "10px" }} onClick={handleSetAdSpend}>
             SET
           </button>
         </div>

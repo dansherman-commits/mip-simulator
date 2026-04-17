@@ -286,6 +286,8 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [swapLane, setSwapLane] = useState<number | null>(null);
+  const [showMonthEndReview, setShowMonthEndReview] = useState(false);
+  const [reviewingMonth, setReviewingMonth] = useState(1);
 
   // Background music control
   useEffect(() => {
@@ -316,16 +318,25 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
 
   // Auto-advance months (5 seconds per month)
   useEffect(() => {
-    if (isPaused || state.phase !== "playing") return;
+    if (isPaused || state.phase !== "playing" || showMonthEndReview) return;
 
     monthTimerRef.current = setTimeout(() => {
-      dispatch({ type: "ADVANCE_MONTH" });
+      // Show month-end review popup and pause
+      setReviewingMonth(state.currentMonth);
+      setShowMonthEndReview(true);
+      setIsPaused(true);
     }, 5000); // 5 seconds
 
     return () => {
       if (monthTimerRef.current) clearTimeout(monthTimerRef.current);
     };
-  }, [state.currentMonth, isPaused, state.phase, dispatch]);
+  }, [state.currentMonth, isPaused, state.phase, showMonthEndReview, dispatch]);
+
+  const handleContinueToNextMonth = () => {
+    setShowMonthEndReview(false);
+    dispatch({ type: "ADVANCE_MONTH" });
+    setIsPaused(false);
+  };
 
   const handleSwapProject = (projectName: string) => {
     if (swapLane !== null) {
@@ -416,6 +427,60 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
             <button className="ui-button" onClick={() => setSwapLane(null)}>
               CANCEL
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Month-End Review Modal */}
+      {showMonthEndReview && (
+        <div className="absolute inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50">
+          <div className="ui-panel max-w-2xl p-8">
+            <h2 className="arcade-title text-center mb-6" style={{ color: "#ffff00", fontSize: "24px" }}>
+              END OF {getMonthName(reviewingMonth)}
+            </h2>
+
+            <div className="pixel-text text-sm space-y-3 mb-6">
+              <div className="flex justify-between">
+                <span style={{ color: "#00ffff" }}>Dev Budget Used:</span>
+                <span style={{ color: "#ffff00" }}>${state.devBudgetUsed.toFixed(1)}M / ${state.devBudgetTotal}M</span>
+              </div>
+              <div className="flex justify-between">
+                <span style={{ color: "#00ffff" }}>Ad Budget Used:</span>
+                <span style={{ color: "#ff00ff" }}>${state.adBudgetUsed.toFixed(1)}M / ${state.adBudgetTotal}M</span>
+              </div>
+              <div className="flex justify-between">
+                <span style={{ color: "#00ffff" }}>Revenue Generated:</span>
+                <span style={{ color: "#00ff00" }}>${state.totalRevenue.toFixed(1)}M</span>
+              </div>
+            </div>
+
+            {state.lanes.some(l => l?.launched) ? (
+              <div className="pixel-text text-center text-sm mb-6" style={{ color: "#00ff00" }}>
+                ► Make changes to your portfolio or adjust ad spend for launched games?
+              </div>
+            ) : (
+              <div className="pixel-text text-center text-sm mb-6" style={{ color: "#00ff00" }}>
+                ► Make changes to your portfolio?
+              </div>
+            )}
+
+            <div className="flex gap-4 justify-center">
+              <button
+                className="ui-button px-6 py-2"
+                onClick={() => {
+                  setShowMonthEndReview(false);
+                  // Stay paused so player can make changes
+                }}
+              >
+                MAKE CHANGES
+              </button>
+              <button
+                className="ui-cta px-6 py-2"
+                onClick={handleContinueToNextMonth}
+              >
+                CONTINUE
+              </button>
+            </div>
           </div>
         </div>
       )}

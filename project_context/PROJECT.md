@@ -20,9 +20,12 @@ You play as Fordy Fortizen, CEO of Fortis Studios. Ultimate Boss gives you:
 
 **Phase 2: Gameplay (12 months)**
 - Games progress through 8 horizontal "Design Lanes" (like Tapper's bar lanes)
-- Each month (~60 seconds real-time):
+- Each month (~5 seconds real-time):
   - Development budget depletes based on active projects' monthly costs
   - Games advance toward launch (time to market)
+  - **Month-end review**: Game auto-pauses and shows summary
+    - Displays budget usage and revenue to date
+    - Player decides: make changes or continue to next month
 - When a game reaches its time to market:
   - ROAS is revealed
   - Set monthly advertising spend for that game
@@ -32,6 +35,7 @@ You play as Fordy Fortizen, CEO of Fortis Studios. Ultimate Boss gives you:
   - Swap in new projects to fill lanes
   - Allocate ad budget to launched games based on their ROAS
   - Balance dev spending vs. revenue generation
+  - Review progress each month and adjust strategy
 
 **End conditions (whichever comes first):**
 - Development budget depleted → Game Over

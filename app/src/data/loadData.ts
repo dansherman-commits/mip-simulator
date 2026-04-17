@@ -50,14 +50,16 @@ export interface ProjectData {
   dev_cost_per_month: number;
   time_to_market: number;
   roas: number;
+  icon: string;
 }
 
 export async function loadProjects(): Promise<ProjectData[]> {
-  const rows = await loadCsv("projects.csv", ["name", "dev_cost_per_month", "time_to_market", "roas"]);
+  const rows = await loadCsv("projects.csv", ["name", "dev_cost_per_month", "time_to_market", "roas", "icon"]);
   return rows.map((r) => ({
     name: r.name,
     dev_cost_per_month: parseFloat(r.dev_cost_per_month),
     time_to_market: parseInt(r.time_to_market, 10),
     roas: parseFloat(r.roas),
+    icon: r.icon,
   }));
 }

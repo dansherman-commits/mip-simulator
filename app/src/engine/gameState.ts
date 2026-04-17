@@ -7,6 +7,7 @@ export interface Project {
   dev_cost_per_month: number;
   time_to_market: number;
   roas: number;
+  icon: string;
 }
 
 export interface LaneProject {

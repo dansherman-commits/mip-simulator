@@ -150,10 +150,17 @@ function SelectionScreen({
           {state.lanes.map((lane, idx) => (
             <button
               key={idx}
-              className={`ui-button text-xs p-2 ${selectedLane === idx ? "ring-2 ring-yellow-400" : ""}`}
+              className={`ui-button text-xs p-2 flex items-center gap-1.5 justify-center ${selectedLane === idx ? "ring-2 ring-yellow-400" : ""}`}
               onClick={() => setSelectedLane(idx)}
             >
-              {lane ? lane.project.name : `Lane ${idx + 1}`}
+              {lane ? (
+                <>
+                  <span className="text-lg">{lane.project.icon}</span>
+                  <span>{lane.project.name}</span>
+                </>
+              ) : (
+                `Lane ${idx + 1}`
+              )}
             </button>
           ))}
         </div>
@@ -172,17 +179,20 @@ function SelectionScreen({
             return (
               <button
                 key={project.name}
-                className="ui-button text-left p-3 text-xs"
+                className="ui-button text-left p-3 text-xs flex gap-3 items-start"
                 disabled={!selectedLane && selectedLane !== 0}
                 onClick={() => handleSelectProject(project.name)}
                 style={{ opacity: alreadySelected ? 0.5 : 1 }}
               >
-                <div className="font-bold" style={{ color: "#00ffff" }}>
-                  {project.name}
+                <div className="text-3xl" style={{ lineHeight: "1" }}>{project.icon}</div>
+                <div className="flex-1">
+                  <div className="font-bold" style={{ color: "#00ffff" }}>
+                    {project.name}
+                  </div>
+                  <div style={{ color: "#ffff00" }}>Cost: ${project.dev_cost_per_month}M/mo</div>
+                  <div style={{ color: "#00ff00" }}>Time: {project.time_to_market} months</div>
+                  <div style={{ color: "#ff00ff" }}>ROAS: ???</div>
                 </div>
-                <div style={{ color: "#ffff00" }}>Cost: ${project.dev_cost_per_month}M/mo</div>
-                <div style={{ color: "#00ff00" }}>Time: {project.time_to_market} months</div>
-                <div style={{ color: "#ff00ff" }}>ROAS: ???</div>
               </button>
             );
           })}
@@ -313,17 +323,20 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
                 return (
                   <button
                     key={project.name}
-                    className="ui-button text-left p-3 text-xs"
+                    className="ui-button text-left p-3 text-xs flex gap-2 items-start"
                     onClick={() => handleSwapProject(project.name)}
                     style={{ opacity: alreadySelected ? 0.5 : 1 }}
                     disabled={alreadySelected}
                   >
-                    <div className="font-bold" style={{ color: "#00ffff" }}>
-                      {project.name}
+                    <div className="text-2xl" style={{ lineHeight: "1" }}>{project.icon}</div>
+                    <div className="flex-1">
+                      <div className="font-bold" style={{ color: "#00ffff" }}>
+                        {project.name}
+                      </div>
+                      <div style={{ color: "#ffff00" }}>Cost: ${project.dev_cost_per_month}M/mo</div>
+                      <div style={{ color: "#00ff00" }}>Time: {project.time_to_market} months</div>
+                      <div style={{ color: "#ff00ff" }}>ROAS: ???</div>
                     </div>
-                    <div style={{ color: "#ffff00" }}>Cost: ${project.dev_cost_per_month}M/mo</div>
-                    <div style={{ color: "#00ff00" }}>Time: {project.time_to_market} months</div>
-                    <div style={{ color: "#ff00ff" }}>ROAS: ???</div>
                   </button>
                 );
               })}
@@ -376,34 +389,37 @@ function DesignLane({
   return (
     <div className="border-b flex items-center px-2 py-1.5 relative" style={{ borderColor: "#00ff00" }}>
       {/* Lane label */}
-      <div className="w-28 space-y-0.5">
-        <div className="pixel-text text-xs font-bold" style={{ color: "#00ffff" }}>
-          {lane.project.name}
-        </div>
-        <div className="pixel-text" style={{ color: "#ffff00", fontSize: "10px" }}>
-          ${lane.project.dev_cost_per_month}M/mo
-        </div>
-        {lane.launched && (
-          <div className="pixel-text" style={{ color: "#00ff00", fontSize: "10px" }}>
-            ROAS: {lane.project.roas.toFixed(1)}x
+      <div className="w-28 space-y-0.5 flex gap-1.5">
+        <div className="text-xl" style={{ lineHeight: "1" }}>{lane.project.icon}</div>
+        <div className="flex-1 space-y-0.5">
+          <div className="pixel-text text-xs font-bold" style={{ color: "#00ffff" }}>
+            {lane.project.name}
           </div>
-        )}
-        {lane.launched && (
+          <div className="pixel-text" style={{ color: "#ffff00", fontSize: "10px" }}>
+            ${lane.project.dev_cost_per_month}M/mo
+          </div>
+          {lane.launched && (
+            <div className="pixel-text" style={{ color: "#00ff00", fontSize: "10px" }}>
+              ROAS: {lane.project.roas.toFixed(1)}x
+            </div>
+          )}
+          {lane.launched && (
+            <button
+              className="ui-button px-1.5 py-0.5 mt-0.5"
+              style={{ fontSize: "10px" }}
+              onClick={() => setShowAdSpendInput(!showAdSpendInput)}
+            >
+              Ad: ${lane.monthlyAdSpend.toFixed(1)}M
+            </button>
+          )}
           <button
-            className="ui-button px-1.5 py-0.5 mt-0.5"
-            style={{ fontSize: "10px" }}
-            onClick={() => setShowAdSpendInput(!showAdSpendInput)}
+            className="ui-button px-1 py-0"
+            onClick={onRequestSwap}
+            style={{ backgroundColor: "#ff0000", borderColor: "#ff0000", fontSize: "9px", marginTop: "2px" }}
           >
-            Ad: ${lane.monthlyAdSpend.toFixed(1)}M
+            X
           </button>
-        )}
-        <button
-          className="ui-button px-1 py-0"
-          onClick={onRequestSwap}
-          style={{ backgroundColor: "#ff0000", borderColor: "#ff0000", fontSize: "9px", marginTop: "2px" }}
-        >
-          X
-        </button>
+        </div>
       </div>
 
       {/* Progress bar */}

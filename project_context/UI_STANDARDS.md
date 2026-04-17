@@ -64,3 +64,11 @@ Rules:
 - Mouse: hover effects enabled
 - Touch: active states only (no hover)
 - Rapid clicks must not create duplicate actions
+
+## Drag and Drop
+
+- Draggable elements use `cursor: grab` (grabbing when active)
+- Drop zones highlight on drag-over (yellow ring)
+- Visual feedback: dragged element becomes semi-transparent
+- Already-selected items are non-draggable (opacity 30%, cursor not-allowed)
+- Instructions shown prominently to explain drag-drop interaction

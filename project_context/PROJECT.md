@@ -12,9 +12,11 @@ You play as Fordy Fortizen, CEO of Fortis Studios. Ultimate Boss gives you:
 - **12 months** to generate **$20M** in revenue
 
 **Phase 1: Project Selection**
-- Choose up to 8 game projects from 26 options (NATO phonetic alphabet names)
-- Each project shows: development cost per month, time to market (in months)
+- Drag games from the available projects grid (26 NATO phonetic alphabet names)
+- Drop them onto any of 8 Design Lanes
+- Each project shows: icon, development cost per month, time to market (in months)
 - ROAS (Return on Ad Spend) is hidden until launch
+- Fill at least 1 lane to start gameplay
 
 **Phase 2: Gameplay (12 months)**
 - Games progress through 8 horizontal "Design Lanes" (like Tapper's bar lanes)

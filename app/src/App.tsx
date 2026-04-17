@@ -125,85 +125,137 @@ function SelectionScreen({
   dispatch: React.Dispatch<any>;
   onStart: () => void;
 }) {
-  const [selectedLane, setSelectedLane] = useState<number | null>(null);
+  const [draggedProject, setDraggedProject] = useState<string | null>(null);
+  const [dragOverLane, setDragOverLane] = useState<number | null>(null);
 
   const filledLanes = state.lanes.filter((l) => l !== null).length;
   const canStart = filledLanes > 0;
 
-  const handleSelectProject = (projectName: string) => {
-    if (selectedLane !== null) {
-      dispatch({ type: "SELECT_PROJECT", laneIndex: selectedLane, projectName });
-      setSelectedLane(null);
+  const handleDragStart = (projectName: string) => {
+    setDraggedProject(projectName);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedProject(null);
+    setDragOverLane(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent, laneIndex: number) => {
+    e.preventDefault();
+    setDragOverLane(laneIndex);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverLane(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, laneIndex: number) => {
+    e.preventDefault();
+    if (draggedProject) {
+      dispatch({ type: "SELECT_PROJECT", laneIndex, projectName: draggedProject });
     }
+    setDraggedProject(null);
+    setDragOverLane(null);
+  };
+
+  const handleRemoveLane = (laneIndex: number) => {
+    dispatch({ type: "REMOVE_PROJECT", laneIndex });
   };
 
   return (
-    <div className="flex flex-col h-full p-4">
-      <h1 className="arcade-title text-center text-2xl mb-4" style={{ color: "#00ff00" }}>
+    <div className="flex flex-col h-full p-3">
+      <h1 className="arcade-title text-center mb-2" style={{ color: "#00ff00", fontSize: "28px" }}>
         SELECT YOUR GAME PROJECTS
       </h1>
 
-      {/* Current selections */}
-      <div className="ui-panel mb-4 p-4">
-        <div className="pixel-text text-sm ink-soft mb-2">DESIGN LANES ({filledLanes}/8 filled)</div>
-        <div className="grid grid-cols-4 gap-2">
-          {state.lanes.map((lane, idx) => (
-            <button
-              key={idx}
-              className={`ui-button text-xs p-2 flex items-center gap-1.5 justify-center ${selectedLane === idx ? "ring-2 ring-yellow-400" : ""}`}
-              onClick={() => setSelectedLane(idx)}
-            >
-              {lane ? (
-                <>
-                  <span className="text-lg">{lane.project.icon}</span>
-                  <span>{lane.project.name}</span>
-                </>
-              ) : (
-                `Lane ${idx + 1}`
-              )}
-            </button>
-          ))}
-        </div>
+      <div className="pixel-text text-center text-xs mb-3" style={{ color: "#ffff00" }}>
+        ► DRAG games from left panel and DROP onto Design Lanes ► Fill at least 1 lane to start
       </div>
 
-      {/* Project list */}
-      <div className="flex-1 overflow-y-auto ui-panel p-4">
-        <div className="pixel-text text-xs ink-soft mb-2">
-          {selectedLane !== null
-            ? `Select project for Lane ${selectedLane + 1}`
-            : "Click a lane above to select a project"}
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          {state.allProjects.map((project) => {
-            const alreadySelected = state.lanes.some((l) => l?.project.name === project.name);
-            return (
-              <button
-                key={project.name}
-                className="ui-button text-left p-3 text-xs flex gap-3 items-start"
-                disabled={!selectedLane && selectedLane !== 0}
-                onClick={() => handleSelectProject(project.name)}
-                style={{ opacity: alreadySelected ? 0.5 : 1 }}
-              >
-                <div className="text-3xl" style={{ lineHeight: "1" }}>{project.icon}</div>
-                <div className="flex-1">
-                  <div className="font-bold" style={{ color: "#00ffff" }}>
+      <div className="flex-1 flex gap-3 overflow-hidden">
+        {/* Left: Available Projects */}
+        <div className="flex-1 ui-panel p-2 overflow-y-auto">
+          <div className="pixel-text text-xs mb-2 ink-soft">AVAILABLE GAMES (26)</div>
+          <div className="grid grid-cols-4 gap-1.5">
+            {state.allProjects.map((project) => {
+              const alreadySelected = state.lanes.some((l) => l?.project.name === project.name);
+              return (
+                <div
+                  key={project.name}
+                  draggable={!alreadySelected}
+                  onDragStart={() => handleDragStart(project.name)}
+                  onDragEnd={handleDragEnd}
+                  className={`ui-button p-1.5 text-center cursor-move ${
+                    alreadySelected ? "opacity-30 cursor-not-allowed" : ""
+                  } ${draggedProject === project.name ? "opacity-50" : ""}`}
+                  style={{ fontSize: "9px" }}
+                >
+                  <div className="text-xl mb-0.5">{project.icon}</div>
+                  <div className="font-bold truncate" style={{ color: "#00ffff" }}>
                     {project.name}
                   </div>
-                  <div style={{ color: "#ffff00" }}>Cost: ${project.dev_cost_per_month}M/mo</div>
-                  <div style={{ color: "#00ff00" }}>Time: {project.time_to_market} months</div>
-                  <div style={{ color: "#ff00ff" }}>ROAS: ???</div>
+                  <div style={{ color: "#ffff00" }}>${project.dev_cost_per_month}M</div>
+                  <div style={{ color: "#00ff00" }}>{project.time_to_market}mo</div>
                 </div>
-              </button>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Start button */}
-      <div className="mt-4 text-center">
-        <button className="ui-cta" disabled={!canStart} onClick={onStart}>
-          START GAME
-        </button>
+        {/* Right: Design Lanes */}
+        <div className="w-80 ui-panel p-3">
+          <div className="pixel-text text-xs mb-2 ink-soft">DESIGN LANES ({filledLanes}/8)</div>
+          <div className="space-y-2">
+            {state.lanes.map((lane, idx) => (
+              <div
+                key={idx}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, idx)}
+                className={`ui-button p-2 flex items-center gap-2 justify-between transition-all ${
+                  dragOverLane === idx ? "ring-2 ring-yellow-400 bg-yellow-900 bg-opacity-20" : ""
+                }`}
+                style={{ minHeight: "50px" }}
+              >
+                {lane ? (
+                  <>
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-2xl">{lane.project.icon}</span>
+                      <div className="text-xs">
+                        <div className="font-bold" style={{ color: "#00ffff" }}>
+                          {lane.project.name}
+                        </div>
+                        <div style={{ color: "#ffff00", fontSize: "9px" }}>
+                          ${lane.project.dev_cost_per_month}M/mo · {lane.project.time_to_market}mo
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveLane(idx)}
+                      className="ui-button px-2 py-1"
+                      style={{ backgroundColor: "#ff0000", borderColor: "#ff0000", fontSize: "9px" }}
+                    >
+                      X
+                    </button>
+                  </>
+                ) : (
+                  <div className="pixel-text text-xs ink-soft text-center w-full">
+                    Drop game here - Lane {idx + 1}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <button
+            className="ui-cta w-full mt-4"
+            disabled={!canStart}
+            onClick={onStart}
+            style={{ fontSize: "14px", padding: "8px" }}
+          >
+            START GAME
+          </button>
+        </div>
       </div>
     </div>
   );

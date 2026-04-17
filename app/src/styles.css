@@ -208,3 +208,13 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+/* ── Drag and drop ─────────────────────────────────────── */
+
+[draggable="true"] {
+  cursor: grab;
+}
+
+[draggable="true"]:active {
+  cursor: grabbing;
+}

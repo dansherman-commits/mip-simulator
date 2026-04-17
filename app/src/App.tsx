@@ -175,7 +175,7 @@ function SelectionScreen({
       <div className="flex-1 flex gap-3 overflow-hidden">
         {/* Left: Available Projects */}
         <div className="flex-1 ui-panel p-2 overflow-y-auto">
-          <div className="pixel-text text-xs mb-2 ink-soft">AVAILABLE GAMES (26)</div>
+          <div className="pixel-text text-xs mb-2 ink-soft">AVAILABLE GAMES (24)</div>
           <div className="grid grid-cols-4 gap-1.5">
             {state.allProjects.map((project) => {
               const alreadySelected = state.lanes.some((l) => l?.project.name === project.name);

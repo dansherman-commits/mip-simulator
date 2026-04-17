@@ -9,7 +9,7 @@
 - `app/src/data/loadData.ts`: CSV loading + validation.
 - `app/src/engine/gameState.ts`: Game state management (reducer, actions, helpers).
 - `data/config.csv`: Global tunables.
-- `data/projects.csv`: 26 game projects with dev costs, time to market, ROAS values.
+- `data/projects.csv`: 24 game projects with dev costs, time to market, ROAS values.
 
 ## Data flow
 

@@ -44,3 +44,20 @@ export async function loadConfig(): Promise<Map<string, string>> {
   const rows = await loadCsv("config.csv", ["key", "value"]);
   return new Map(rows.map((r) => [r.key, r.value]));
 }
+
+export interface ProjectData {
+  name: string;
+  dev_cost_per_month: number;
+  time_to_market: number;
+  roas: number;
+}
+
+export async function loadProjects(): Promise<ProjectData[]> {
+  const rows = await loadCsv("projects.csv", ["name", "dev_cost_per_month", "time_to_market", "roas"]);
+  return rows.map((r) => ({
+    name: r.name,
+    dev_cost_per_month: parseFloat(r.dev_cost_per_month),
+    time_to_market: parseInt(r.time_to_market, 10),
+    roas: parseFloat(r.roas),
+  }));
+}

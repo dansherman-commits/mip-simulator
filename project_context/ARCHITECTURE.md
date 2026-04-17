@@ -4,10 +4,12 @@
 
 - `app/index.html`: Vite entry HTML.
 - `app/src/main.tsx`: React entry point.
-- `app/src/App.tsx`: Main app shell and UI layout.
-- `app/src/styles.css`: Tailwind base, theme variables, viewport management (app-shell/game-screen/app-screen).
+- `app/src/App.tsx`: Main game UI with all screens (intro, selection, gameplay, end).
+- `app/src/styles.css`: 8-bit arcade theme, CRT effects, viewport management.
 - `app/src/data/loadData.ts`: CSV loading + validation.
+- `app/src/engine/gameState.ts`: Game state management (reducer, actions, helpers).
 - `data/config.csv`: Global tunables.
+- `data/projects.csv`: 26 game projects with dev costs, time to market, ROAS values.
 
 ## Data flow
 
@@ -16,7 +18,10 @@
 
 ## Where to change things
 
-- React UI: `app/src/App.tsx` + `app/src/components/*`
-- Game state + rules: `app/src/engine/*` (create files as needed)
-- Data loading + validation: `app/src/data/loadData.ts`
-- Tuning values: `data/config.csv` or new CSV files (document in DATA.md)
+- **Game screens** (intro, selection, gameplay, end): `app/src/App.tsx`
+- **Game rules and state logic**: `app/src/engine/gameState.ts`
+- **Visual theme** (colors, CRT effects, fonts): `app/src/styles.css`
+- **Project data** (costs, time to market, ROAS): `data/projects.csv`
+- **Budget values, win threshold**: Edit constants in `app/src/engine/gameState.ts` (`initialState`)
+- **Month duration**: Change timeout value in `GameplayScreen` (currently 60000ms = 1 minute)
+- **New CSVs**: Add to `data/`, create loader in `loadData.ts`, document in DATA.md

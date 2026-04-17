@@ -24,6 +24,17 @@ All CSVs live in `data/` and are loaded at runtime. Values are read as strings a
   - `time_to_market` between 1 and 12
   - `roas` > 0
 
+## Audio files
+
+### data/gameplay-music.mp3
+
+- Optional background music file that plays during gameplay
+- Format: MP3 audio
+- Should loop seamlessly (set to loop automatically in code)
+- Recommended: 30-60 second retro/chiptune track
+- If missing: game plays silently (no error, just a 404 in console)
+- See `data/AUDIO_README.md` for sources and instructions
+
 ## Validation rules
 
 - When adding a new CSV, document its schema and constraints in this file.

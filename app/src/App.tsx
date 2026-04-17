@@ -203,16 +203,44 @@ function SelectionScreen({
 
 function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React.Dispatch<any> }) {
   const monthTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [swapLane, setSwapLane] = useState<number | null>(null);
 
-  // Auto-advance months (60 seconds per month)
+  // Background music control
+  useEffect(() => {
+    // Create audio element on mount
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/gameplay-music.mp3");
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.4;
+    }
+
+    const audio = audioRef.current;
+
+    // Play when gameplay starts and not paused
+    if (state.phase === "playing" && !isPaused) {
+      audio.play().catch(() => {
+        // Browser may block autoplay - user interaction required
+        console.log("Music autoplay blocked - will play on first interaction");
+      });
+    } else {
+      audio.pause();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      audio.pause();
+    };
+  }, [state.phase, isPaused]);
+
+  // Auto-advance months (5 seconds per month)
   useEffect(() => {
     if (isPaused || state.phase !== "playing") return;
 
     monthTimerRef.current = setTimeout(() => {
       dispatch({ type: "ADVANCE_MONTH" });
-    }, 60000); // 60 seconds
+    }, 5000); // 5 seconds
 
     return () => {
       if (monthTimerRef.current) clearTimeout(monthTimerRef.current);
@@ -370,11 +398,11 @@ function DesignLane({
           </button>
         )}
         <button
-          className="ui-button px-1.5 py-0.5 mt-0.5"
+          className="ui-button px-1 py-0"
           onClick={onRequestSwap}
-          style={{ backgroundColor: "#ff0000", borderColor: "#ff0000", fontSize: "10px" }}
+          style={{ backgroundColor: "#ff0000", borderColor: "#ff0000", fontSize: "9px", marginTop: "2px" }}
         >
-          CANCEL
+          X
         </button>
       </div>
 

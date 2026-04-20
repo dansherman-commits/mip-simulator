@@ -37,10 +37,18 @@ You play as Fordy Fortizen, CEO of Fortis Studios. Ultimate Boss gives you:
   - Balance dev spending vs. revenue generation
   - Review progress each month and adjust strategy
 
-**End conditions (whichever comes first):**
-- Development budget depleted → Game Over
-- Advertising budget depleted → Game Over
-- December ends → Final score
+**Budget Management:**
+- **No abrupt game overs** - Game continues even if budgets are nearly depleted
+- At month-end review, system checks if next month would exceed remaining budgets
+- If next month's costs > remaining budget:
+  - "Continue" button is disabled
+  - Ultimate Boss warns about budget overage
+  - Player **must** cancel projects or reduce ad spend before continuing
+  - This prevents budget overruns while keeping player in control
+
+**End conditions:**
+- Game only ends after **December completes**
+- Final score = total revenue generated
 
 **Win:** Total revenue ≥ $20M
 

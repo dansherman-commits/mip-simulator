@@ -8,6 +8,7 @@ import {
   getAdBudgetRemaining,
   hasWon,
   getMonthName,
+  canAffordNextMonth,
 } from "./engine/gameState";
 
 // Helper component to render icons (emoji or image)
@@ -531,38 +532,62 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
                     }
                   </p>
 
-                  <p style={{ color: "#ff00ff" }}>
-                    {state.lanes.some(l => l?.launched)
-                      ? "\"Want to adjust your portfolio or ad spend before next month?\""
-                      : "\"Want to make any changes to your portfolio?\""
+                  {(() => {
+                    const affordability = canAffordNextMonth(state);
+                    if (!affordability.canAfford && state.currentMonth <= 12) {
+                      return (
+                        <p className="mt-4" style={{ color: "#ff0000" }}>
+                          "⚠ {affordability.reason}"
+                        </p>
+                      );
                     }
-                  </p>
+                    return (
+                      <p style={{ color: "#ff00ff" }}>
+                        {state.lanes.some(l => l?.launched)
+                          ? "\"Want to adjust your portfolio or ad spend before next month?\""
+                          : "\"Want to make any changes to your portfolio?\""
+                        }
+                      </p>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-6 justify-center">
-              <button
-                className="ui-button px-8 py-3 text-sm"
-                onClick={() => {
-                  setShowMonthEndReview(false);
-                  // Stay paused so player can make changes
-                }}
-              >
-                MAKE CHANGES
-              </button>
-              <button
-                className="ui-cta px-8 py-3 text-sm"
-                onClick={handleContinueToNextMonth}
-              >
-                CONTINUE
-              </button>
-            </div>
+            {(() => {
+              const affordability = canAffordNextMonth(state);
+              const canContinue = affordability.canAfford || state.currentMonth > 12;
+
+              return (
+                <div className="flex gap-6 justify-center">
+                  <button
+                    className="ui-button px-8 py-3 text-sm"
+                    onClick={() => {
+                      setShowMonthEndReview(false);
+                      // Stay paused so player can make changes
+                    }}
+                  >
+                    MAKE CHANGES
+                  </button>
+                  <button
+                    className="ui-cta px-8 py-3 text-sm"
+                    onClick={handleContinueToNextMonth}
+                    disabled={!canContinue}
+                    style={{ opacity: canContinue ? 1 : 0.3, cursor: canContinue ? 'pointer' : 'not-allowed' }}
+                  >
+                    CONTINUE
+                  </button>
+                </div>
+              );
+            })()}
 
             {/* Bottom instruction */}
             <div className="text-center mt-6 pixel-text text-xs" style={{ color: "#00aa00" }}>
-              PRESS CONTINUE OR MAKE CHANGES
+              {canAffordNextMonth(state).canAfford || state.currentMonth > 12
+                ? "PRESS CONTINUE OR MAKE CHANGES"
+                : "MUST MAKE CHANGES TO CONTINUE"
+              }
             </div>
           </div>
         </div>

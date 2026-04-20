@@ -152,14 +152,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // 5. Advance month
       newState.currentMonth += 1;
 
-      // 6. Check end conditions
-      if (newState.devBudgetUsed >= newState.devBudgetTotal) {
-        newState.phase = "ended";
-        newState.endReason = "dev_budget_depleted";
-      } else if (newState.adBudgetUsed >= newState.adBudgetTotal) {
-        newState.phase = "ended";
-        newState.endReason = "ad_budget_depleted";
-      } else if (newState.currentMonth > 12) {
+      // 6. Check end conditions - only end after December
+      if (newState.currentMonth > 12) {
         newState.phase = "ended";
         newState.endReason = "december_ended";
       }
@@ -204,4 +198,48 @@ export function hasWon(state: GameState): boolean {
 export function getMonthName(month: number): string {
   const names = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   return names[month - 1] || "";
+}
+
+export function getNextMonthDevCost(state: GameState): number {
+  let totalDevCost = 0;
+  for (const lane of state.lanes) {
+    if (lane) {
+      totalDevCost += lane.project.dev_cost_per_month;
+    }
+  }
+  return totalDevCost;
+}
+
+export function getNextMonthAdCost(state: GameState): number {
+  let totalAdCost = 0;
+  for (const lane of state.lanes) {
+    if (lane && lane.launched && lane.monthlyAdSpend > 0) {
+      totalAdCost += lane.monthlyAdSpend;
+    }
+  }
+  return totalAdCost;
+}
+
+export function canAffordNextMonth(state: GameState): { canAfford: boolean; reason: string | null } {
+  const nextDevCost = getNextMonthDevCost(state);
+  const nextAdCost = getNextMonthAdCost(state);
+
+  const devBudgetRemaining = getDevBudgetRemaining(state);
+  const adBudgetRemaining = getAdBudgetRemaining(state);
+
+  if (nextDevCost > devBudgetRemaining) {
+    return {
+      canAfford: false,
+      reason: `Next month's dev costs ($${nextDevCost.toFixed(1)}M) exceed remaining budget ($${devBudgetRemaining.toFixed(1)}M). Cancel some projects!`
+    };
+  }
+
+  if (nextAdCost > adBudgetRemaining) {
+    return {
+      canAfford: false,
+      reason: `Next month's ad spend ($${nextAdCost.toFixed(1)}M) exceeds remaining budget ($${adBudgetRemaining.toFixed(1)}M). Reduce ad spending!`
+    };
+  }
+
+  return { canAfford: true, reason: null };
 }

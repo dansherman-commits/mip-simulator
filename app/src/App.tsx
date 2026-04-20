@@ -321,8 +321,11 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
     if (isPaused || state.phase !== "playing" || showMonthEndReview) return;
 
     monthTimerRef.current = setTimeout(() => {
-      // Show month-end review popup and pause
-      setReviewingMonth(state.currentMonth);
+      // Advance month first (this processes costs/revenue)
+      const completedMonth = state.currentMonth;
+      dispatch({ type: "ADVANCE_MONTH" });
+      // Then show review of the month that just completed
+      setReviewingMonth(completedMonth);
       setShowMonthEndReview(true);
       setIsPaused(true);
     }, 5000); // 5 seconds
@@ -334,7 +337,6 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
 
   const handleContinueToNextMonth = () => {
     setShowMonthEndReview(false);
-    dispatch({ type: "ADVANCE_MONTH" });
     setIsPaused(false);
   };
 
@@ -554,7 +556,7 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
                 className="ui-cta px-8 py-3 text-sm"
                 onClick={handleContinueToNextMonth}
               >
-                CONTINUE TO {getMonthName(reviewingMonth + 1)}
+                CONTINUE
               </button>
             </div>
 

@@ -39,6 +39,28 @@ All CSVs live in `data/` and are loaded at runtime. Values are read as strings a
 - If missing: game plays silently (no error, just a 404 in console)
 - See `data/AUDIO_README.md` for sources and instructions
 
+## Character portrait images
+
+### data/sprites/ultimate-boss.png
+
+- Character portrait for Ultimate Boss (the investor)
+- Appears in month-end review confrontation screens
+- Format: PNG image
+- Size: Up to 280x280px (scaled to fit)
+- Style: Pixel art or stylized arcade character portrait
+- If missing: displays 👔 emoji fallback
+
+### data/sprites/fordy.png
+
+- Character portrait for Fordy Fortizen (player character)
+- Appears in month-end review confrontation screens
+- Format: PNG image
+- Size: Up to 280x280px (scaled to fit)
+- Style: Pixel art or stylized arcade character portrait
+- If missing: displays 🎮 emoji fallback
+
+See `data/sprites/CHARACTER_PORTRAITS.md` for creation guide and AI generation prompts
+
 ## Validation rules
 
 - When adding a new CSV, document its schema and constraints in this file.

@@ -431,42 +431,118 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
         </div>
       )}
 
-      {/* Month-End Review Modal */}
+      {/* Month-End Review Modal - Arcade Confrontation Style */}
       {showMonthEndReview && (
-        <div className="absolute inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50">
-          <div className="ui-panel max-w-2xl p-8">
-            <h2 className="arcade-title text-center mb-6" style={{ color: "#ffff00", fontSize: "24px" }}>
-              END OF {getMonthName(reviewingMonth)}
-            </h2>
+        <div className="absolute inset-0 bg-black flex items-center justify-center z-50">
+          <div className="w-full h-full flex flex-col justify-center" style={{ background: "#000" }}>
 
-            <div className="pixel-text text-sm space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span style={{ color: "#00ffff" }}>Dev Budget Used:</span>
-                <span style={{ color: "#ffff00" }}>${state.devBudgetUsed.toFixed(1)}M / ${state.devBudgetTotal}M</span>
+            {/* Title Bar */}
+            <div className="text-center mb-8">
+              <h2 className="arcade-title" style={{ color: "#ffff00", fontSize: "32px" }}>
+                END OF {getMonthName(reviewingMonth)}
+              </h2>
+            </div>
+
+            {/* Character Confrontation */}
+            <div className="flex items-start justify-center gap-12 mb-8">
+
+              {/* Ultimate Boss - Left Side */}
+              <div className="flex flex-col items-center">
+                <div className="ui-panel p-4 mb-4" style={{ width: "280px", height: "280px", display: "flex", alignItems: "center", justifyContent: "center", background: "#1a1a2e" }}>
+                  <img
+                    src="/sprites/ultimate-boss.png"
+                    alt="Ultimate Boss"
+                    style={{ maxWidth: "100%", maxHeight: "100%", imageRendering: "pixelated" }}
+                    onError={(e) => {
+                      // Fallback if image doesn't exist
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerHTML = '<div class="pixel-text text-6xl" style="color: #ff0000;">👔</div>';
+                    }}
+                  />
+                </div>
+                <div className="pixel-text text-center text-xs" style={{ color: "#ff00ff" }}>
+                  ULTIMATE BOSS
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span style={{ color: "#00ffff" }}>Ad Budget Used:</span>
-                <span style={{ color: "#ff00ff" }}>${state.adBudgetUsed.toFixed(1)}M / ${state.adBudgetTotal}M</span>
+
+              {/* VS Indicator */}
+              <div className="flex items-center">
+                <div className="pixel-text text-5xl" style={{ color: "#ffff00", textShadow: "0 0 10px #ffff00" }}>
+                  VS
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span style={{ color: "#00ffff" }}>Revenue Generated:</span>
-                <span style={{ color: "#00ff00" }}>${state.totalRevenue.toFixed(1)}M</span>
+
+              {/* Fordy - Right Side */}
+              <div className="flex flex-col items-center">
+                <div className="ui-panel p-4 mb-4" style={{ width: "280px", height: "280px", display: "flex", alignItems: "center", justifyContent: "center", background: "#1a1a2e" }}>
+                  <img
+                    src="/sprites/fordy.png"
+                    alt="Fordy Fortizen"
+                    style={{ maxWidth: "100%", maxHeight: "100%", imageRendering: "pixelated" }}
+                    onError={(e) => {
+                      // Fallback if image doesn't exist
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerHTML = '<div class="pixel-text text-6xl" style="color: #00ff00;">🎮</div>';
+                    }}
+                  />
+                </div>
+                <div className="pixel-text text-center text-xs" style={{ color: "#00ffff" }}>
+                  FORDY FORTIZEN
+                </div>
               </div>
             </div>
 
-            {state.lanes.some(l => l?.launched) ? (
-              <div className="pixel-text text-center text-sm mb-6" style={{ color: "#00ff00" }}>
-                ► Make changes to your portfolio or adjust ad spend for launched games?
-              </div>
-            ) : (
-              <div className="pixel-text text-center text-sm mb-6" style={{ color: "#00ff00" }}>
-                ► Make changes to your portfolio?
-              </div>
-            )}
+            {/* Ultimate Boss Dialogue Box */}
+            <div className="max-w-3xl mx-auto mb-6">
+              <div className="ui-panel p-6" style={{ background: "#1a1a2e", borderColor: "#ff00ff" }}>
+                <div className="pixel-text text-sm space-y-3">
+                  <p style={{ color: "#ff00ff" }}>
+                    ► ULTIMATE BOSS:
+                  </p>
+                  <p style={{ color: "#ffff00" }}>
+                    "Listen up, Fordy. Here's where we stand..."
+                  </p>
 
-            <div className="flex gap-4 justify-center">
+                  <div className="space-y-2 mt-4 pl-4">
+                    <div className="flex justify-between">
+                      <span style={{ color: "#00ffff" }}>DEV BUDGET:</span>
+                      <span style={{ color: state.devBudgetUsed / state.devBudgetTotal > 0.8 ? "#ff0000" : "#00ff00" }}>
+                        ${state.devBudgetUsed.toFixed(1)}M / ${state.devBudgetTotal}M
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span style={{ color: "#00ffff" }}>AD BUDGET:</span>
+                      <span style={{ color: state.adBudgetUsed / state.adBudgetTotal > 0.8 ? "#ff0000" : "#ff00ff" }}>
+                        ${state.adBudgetUsed.toFixed(1)}M / ${state.adBudgetTotal}M
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span style={{ color: "#00ffff" }}>REVENUE:</span>
+                      <span style={{ color: "#00ff00" }}>${state.totalRevenue.toFixed(1)}M</span>
+                    </div>
+                  </div>
+
+                  <p className="mt-4" style={{ color: state.totalRevenue >= 20 ? "#00ff00" : "#ffff00" }}>
+                    {state.totalRevenue >= 20
+                      ? "\"You've hit the target! Keep it up!\""
+                      : `"You need $${(20 - state.totalRevenue).toFixed(1)}M more to hit your goal."`
+                    }
+                  </p>
+
+                  <p style={{ color: "#ff00ff" }}>
+                    {state.lanes.some(l => l?.launched)
+                      ? "\"Want to adjust your portfolio or ad spend before next month?\""
+                      : "\"Want to make any changes to your portfolio?\""
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-6 justify-center">
               <button
-                className="ui-button px-6 py-2"
+                className="ui-button px-8 py-3 text-sm"
                 onClick={() => {
                   setShowMonthEndReview(false);
                   // Stay paused so player can make changes
@@ -475,11 +551,16 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
                 MAKE CHANGES
               </button>
               <button
-                className="ui-cta px-6 py-2"
+                className="ui-cta px-8 py-3 text-sm"
                 onClick={handleContinueToNextMonth}
               >
-                CONTINUE
+                CONTINUE TO {getMonthName(reviewingMonth + 1)}
               </button>
+            </div>
+
+            {/* Bottom instruction */}
+            <div className="text-center mt-6 pixel-text text-xs" style={{ color: "#00aa00" }}>
+              PRESS CONTINUE OR MAKE CHANGES
             </div>
           </div>
         </div>

@@ -72,3 +72,18 @@ Rules:
 - Visual feedback: dragged element becomes semi-transparent
 - Already-selected items are non-draggable (opacity 30%, cursor not-allowed)
 - Instructions shown prominently to explain drag-drop interaction
+
+## Character Confrontation Screens
+
+Inspired by Punch-Out and Street Fighter, used for month-end reviews:
+
+- **Layout**: Two character portraits facing each other with "VS" between them
+- **Portrait containers**: 280x280px panels with dark background (#1a1a2e)
+- **Character labels**: Below portraits in contrasting colors (boss: magenta, player: cyan)
+- **Dialogue box**: Large panel below portraits with character speech
+- **Color coding**:
+  - Ultimate Boss text: Magenta (#ff00ff)
+  - Fordy text: Cyan (#00ffff)
+  - Stats: Color changes based on threshold (green = good, yellow = warning, red = danger)
+- **Image rendering**: `image-rendering: pixelated` for sharp pixel art
+- **Fallback**: Emoji icons if portrait images missing (👔 for boss, 🎮 for player)

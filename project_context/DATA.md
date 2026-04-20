@@ -17,7 +17,7 @@ All CSVs live in `data/` and are loaded at runtime. Values are read as strings a
   - `name` (string): Project name (Alfa, Bravo, Charlie, etc.)
   - `dev_cost_per_month` (number): Monthly development cost in millions of dollars
   - `time_to_market` (number): Months until game launches (1-12)
-  - `roas` (number): Return on Ad Spend multiplier (hidden from player until launch)
+  - `roas` (number): Return on Ad Spend multiplier (hidden from player until launch). Revenue = Monthly Ad Spend × ROAS. Values range from 0.75 to 2.8.
   - `icon` (string): Single emoji/unicode character OR path to image file (e.g., "sprites/mike.png")
 - Constraints:
   - Exactly 24 rows (Alfa through Xray)

@@ -525,6 +525,29 @@ function GameplayScreen({ state, dispatch }: { state: GameState; dispatch: React
                     </div>
                   </div>
 
+                  {(() => {
+                    // Check for budget burn rate issues
+                    const timeElapsed = reviewingMonth / 12; // Fraction of year completed
+                    const devBudgetPercent = state.devBudgetUsed / state.devBudgetTotal;
+                    const adBudgetPercent = state.adBudgetUsed / state.adBudgetTotal;
+
+                    const devBurnWarning = devBudgetPercent > timeElapsed * 1.5 && devBudgetPercent > 0.3;
+                    const adBurnWarning = adBudgetPercent > timeElapsed * 1.5 && adBudgetPercent > 0.3;
+
+                    if (devBurnWarning || adBurnWarning) {
+                      return (
+                        <p className="mt-4" style={{ color: "#ff0000" }}>
+                          "⚠ WARNING: You're {Math.round(timeElapsed * 100)}% through the year but you've already spent{' '}
+                          {devBurnWarning && `${Math.round(devBudgetPercent * 100)}% of your dev budget`}
+                          {devBurnWarning && adBurnWarning && ' and '}
+                          {adBurnWarning && `${Math.round(adBudgetPercent * 100)}% of your ad budget`}!
+                          At this rate, you'll exceed your annual budget. NOT ACCEPTABLE!"
+                        </p>
+                      );
+                    }
+                    return null;
+                  })()}
+
                   <p className="mt-4" style={{ color: state.totalRevenue >= 20 ? "#00ff00" : "#ffff00" }}>
                     {state.totalRevenue >= 20
                       ? "\"You've hit the target! Keep it up!\""

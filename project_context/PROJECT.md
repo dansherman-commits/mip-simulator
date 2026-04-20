@@ -46,6 +46,14 @@ You play as Fordy Fortizen, CEO of Fortis Studios. Ultimate Boss gives you:
   - Player **must** cancel projects or reduce ad spend before continuing
   - This prevents budget overruns while keeping player in control
 
+**Budget Burn Rate Warnings:**
+- Ultimate Boss monitors spending pace throughout the year
+- If budget burn rate exceeds time elapsed significantly:
+  - Example: 25% through year (March) but 50%+ budget spent
+  - Ultimate Boss displays warning: "⚠ WARNING: You're X% through the year but you've already spent Y% of your budget! At this rate, you'll exceed your annual budget. NOT ACCEPTABLE!"
+  - Warning appears in red during month-end review
+  - Helps player adjust strategy before it's too late
+
 **End conditions:**
 - Game only ends after **December completes**
 - Final score = total revenue generated
